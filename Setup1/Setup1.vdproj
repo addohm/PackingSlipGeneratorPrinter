@@ -15,25 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_0D81E79F71D0489C9B44D6BA42839813"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_1041B78192F74339B73A1EB1A351A336"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_68F623B59A824EC2AFE53DDF6ACC3AC8"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6BD8C7EFEAE64732B8105B331C7B6E08"
+        "MsmKey" = "8:_87A21A2171114A638BF15DBE434E3DB8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -150,50 +138,10 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0D81E79F71D0489C9B44D6BA42839813"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_87A21A2171114A638BF15DBE434E3DB8"
             {
-            "SourcePath" = "8:..\\o2010pia.msi"
-            "TargetName" = "8:o2010pia.msi"
-            "Tag" = "8:"
-            "Folder" = "8:_64B1B4C4579547FDA2DC87342D915265"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_68F623B59A824EC2AFE53DDF6ACC3AC8"
-            {
-            "SourcePath" = "8:..\\ITO_PackListTemplate.dotm"
-            "TargetName" = "8:ITO_PackListTemplate.dotm"
-            "Tag" = "8:"
-            "Folder" = "8:_64B1B4C4579547FDA2DC87342D915265"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6BD8C7EFEAE64732B8105B331C7B6E08"
-            {
-            "SourcePath" = "8:..\\CO_PackListTemplate.dotm"
-            "TargetName" = "8:CO_PackListTemplate.dotm"
+            "SourcePath" = "8:..\\Dependencies\\PackListTemplate.dotm"
+            "TargetName" = "8:PackListTemplate.dotm"
             "Tag" = "8:"
             "Folder" = "8:_64B1B4C4579547FDA2DC87342D915265"
             "Condition" = "8:"
@@ -217,11 +165,6 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
-                    "_F844EE9C7996D37B45AEDEE33FD857D1"
-                    {
-                    "Name" = "8:System.Net.Http.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Net.Http.dll"
             "TargetName" = "8:"
