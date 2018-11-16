@@ -9,10 +9,10 @@
       <Value Profile="(Default)">ROBOTICS_OPTICS_DEV</Value>
     </Setting>
     <Setting Name="sqlUsername" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">testuser</Value>
     </Setting>
     <Setting Name="sqlPassword" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">testpassword</Value>
     </Setting>
     <Setting Name="ConnStr" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
