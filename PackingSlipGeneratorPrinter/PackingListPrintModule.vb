@@ -1,6 +1,6 @@
 ﻿Imports System.Data.SqlClient 'needed for DB interactions
-Imports System.IO 'needed for BLOB
 Imports System.Drawing
+Imports System.IO 'needed for BLOB
 Imports Word = Microsoft.Office.Interop.Word 'needed for COM object interaction with MS Word
 
 Module PackingListPrintModule
@@ -206,135 +206,139 @@ Module PackingListPrintModule
                                         End With
                                     End With
 
-                                    cmd.CommandText = "SELECT [SALES_ORDER_NUMBER], ISNULL([CUSTOMER_PO], ''), ISNULL([SHIP_VIA], ''), " _
-                            & "ISNULL([DELIVERY_COMPANY], ''), ISNULL([DELIVERY_ATTN_TO], ''), ISNULL([DELIVERY_STREET], '')," _
-                            & "ISNULL([DELIVERY_CITY], ''), ISNULL([DELIVERY_STATE], ''), ISNULL([DELIVERY_POSTAL_CODE], '')," _
-                            & "ISNULL([DELIVERY_COUNTRY], ''), ISNULL([BILLING_COMPANY], ''), ISNULL([BILLING_STREET], '')," _
-                            & "ISNULL([BILLING_CITY], ''), ISNULL([BILLING_STATE], ''), ISNULL([BILLING_POSTAL_CODE], ''), " _
-                            & "ISNULL([BILLING_COUNTRY], ''), ISNULL([SALES_ORDER_NOTES], '') FROM [AOF_ORDER_QUEUE] " _
-                            & "WHERE [SELECTED] = 'True' "
-                                        Dim readerOrderQueue As SqlDataReader = cmd.ExecuteReader()
-                                        readerOrderQueue.Read()
-                                        'Table 1 company information and sales order number
-                                        objTable = .Tables.Item(1) 'select table 1
+                                    cmd.CommandText = "SELECT [SALES_ORDER_NUMBER], ISNULL([CUSTOMER_PO], ''), ISNULL([SHIP_VIA], '')," _
+                             & "ISNULL([DELIVERY_COMPANY], ''), ISNULL([DELIVERY_ATTN_TO], ''), ISNULL([DELIVERY_STREET], ''), " _
+                             & "ISNULL([DELIVERY_CITY], ''), ISNULL([DELIVERY_STATE], ''), ISNULL([DELIVERY_POSTAL_CODE], ''), " _
+                             & "ISNULL([DELIVERY_COUNTRY], ''), ISNULL([BILLING_COMPANY], ''), ISNULL([BILLING_STREET], ''), " _
+                             & "ISNULL([BILLING_CITY], ''), ISNULL([BILLING_STATE], ''), ISNULL([BILLING_POSTAL_CODE], ''),  " _
+                             & "ISNULL([BILLING_COUNTRY], ''), ISNULL([SALES_ORDER_NOTES], ''), ISNULL([COMPANY_NAME], '')," _
+                             & "ISNULL([COMPANY_STREET], ''), ISNULL([COMPANY_CITY], ''), ISNULL([COMPANY_STATE], '')," _
+                             & "ISNULL([COMPANY_POSTAL_CODE], ''), ISNULL([COMPANY_COUNTRY], ''), ISNULL([COMPANY_EMAIL], ''), " _
+                             & "ISNULL([COMPANY_PHONE], '') FROM [AOF_ORDER_QUEUE]"
+                                    Dim readerOrderQueue As SqlDataReader = cmd.ExecuteReader()
+                                    readerOrderQueue.Read()
+                                    'Table 1 company information and sales order number
+                                    objTable = .Tables.Item(1) 'select table 1
 
-                                        With objTable
-                                            'Insert Text into table 1
-                                            'Company Address
-                                            .Cell(1, 1).Range.Text = "Integra Optics, Inc."
-                                            .Cell(2, 1).Range.Text = "745 Albany Shaker Rd" & vbCrLf & "Latham, NY 12110-1417" _
-                                & vbCrLf & "Phone: (877) 402-3850" & vbCrLf & "FAX: (866) 847-5219" & vbCrLf _
-                                & "Email: info@integraoptics.com"
-                                            'Packing List & SO
-                                            soNumber = cleanedText(readerOrderQueue(0), "/")
-                                            .Cell(2, 2).Range.Text = soNumber
-                                        End With
+                                    With objTable
+                                        'Insert Text into table 1
+                                        'Company Address
+                                        .Cell(1, 1).Range.Text = readerOrderQueue(17)
+                                        .Cell(2, 1).Range.Text = readerOrderQueue(18) & vbCrLf _
+                                            & readerOrderQueue(19) & readerOrderQueue(20) & ", " & readerOrderQueue(21) & vbCrLf _
+                                            & readerOrderQueue(22) & vbCrLf _
+                                            & "Phone: " & readerOrderQueue(23) & vbCrLf _
+                                            & "Email: " & readerOrderQueue(24)
+                                        'Packing List & SO
+                                        soNumber = cleanedText(readerOrderQueue(0), "/")
+                                        .Cell(2, 2).Range.Text = soNumber
+                                    End With
 
-                                        'Table 2 shipping information and billing information
-                                        objTable = .Tables.Item(2)
-                                        With objTable
-                                            'Insert Text into table 2
-                                            'Ship to
-                                            .Cell(2, 1).Range.Text = readerOrderQueue(3) 'Company name
-                                            If Not readerOrderQueue.IsDBNull(4) Then
-                                                .Cell(2, 1).Range.Text = .Cell(2, 1).Range.Text & readerOrderQueue(4) 'Attn to if exists
-                                            End If
-                                            .Cell(2, 1).Range.Text = .Cell(2, 1).Range.Text & readerOrderQueue(5) & vbCrLf & readerOrderQueue(6) _
-                                & ", " & readerOrderQueue(7) & " " & readerOrderQueue(8) & vbCrLf & readerOrderQueue(9)
-                                            'Bill to
-                                            .Cell(2, 2).Range.Text = readerOrderQueue(10) & vbCrLf & readerOrderQueue(11) & vbCrLf & readerOrderQueue(12) _
-                                & " " & readerOrderQueue(13) & ", " & readerOrderQueue(14) & vbCrLf & readerOrderQueue(15)
-                                            'Notes
-                                            .Cell(3, 1).Range.Text = .Cell(3, 1).Range.Text & " " & readerOrderQueue(1)
-                                            If Not readerOrderQueue.IsDBNull(16) Then
-                                                .Cell(3, 1).Range.Text = .Cell(3, 1).Range.Text & " " & readerOrderQueue(16)
-                                            End If
-                                        End With
-
-                                        'Table 3 sales order, customer PO, and shipping method
-                                        objTable = .Tables.Item(3)
-
-                                        With objTable
-                                            'Insert Text into table 3
-                                            'SO Info
-                                            .Cell(2, 1).Range.Text = readerOrderQueue(1)
-                                            .Cell(2, 2).Range.Text = readerOrderQueue(2)
-                                        End With
-
-                                        readerOrderQueue.Close() 'close the order queue reader
-
-                                        If Not readerOrderQueue Is Nothing Then readerOrderQueue = Nothing
-
-                                        'Line item information
-                                        cmd.CommandText = "SELECT bL.[FINISHED_PART_NUMBER], ISNULL(bL.[SERIAL_NUMBERS], ''), " _
-                            & "bL.[QUANTITY], bL.[SO_LINE_NUMBER], aol.[QUANTITY_NEEDED], ISNULL(aoL.[DESCRIPTION], ''), " _
-                            & "ISNULL(aoL.[CUSTOMER_PRODUCT_NUMBER], '') " _
-                            & "FROM [AOF_BOXES_LINES] AS bL " _
-                            & "LEFT JOIN [AOF_ALL_ORDER_LINES] AS aoL " _
-                            & "On aoL.[SO_LINE_NUMBER] = bL.[SO_LINE_NUMBER] " _
-                            & "LEFT JOIN [AOF_ORDER_LINE_QUEUE] AS lQ " _
-                            & "On aoL.[SO_LINE_NUMBER] = lQ.[SO_LINE_NUMBER] " _
-                            & "LEFT JOIN [AOF_ORDER_QUEUE] AS oQ " _
-                            & "On aoL.[SALES_ORDER_NUMBER] = oQ.[SALES_ORDER_NUMBER] " _
-                            & "WHERE oQ.[SELECTED] = 'True' AND bL.[AOF_BOXES_ID] = " & boxID
-                                        Dim readerOrderLines As SqlDataReader = cmd.ExecuteReader()
-                                        Dim rstLoop As Integer = 0
-
-                                        'Line items
-                                        objTable = .Tables.Item(4)
-
-                                        'Insert text into table 4
-                                        With objTable
-                                            Do While readerOrderLines.Read()
-                                                .Cell(rstLoop + 2, 1).Range.Text = readerOrderLines(0) 'Item
-                                                .Cell(rstLoop + 2, 2).Range.Text = readerOrderLines(6) & vbCrLf _
-                                    & readerOrderLines(5) & vbCrLf _
-                                    & readerOrderLines(1) 'Description
-                                                .Cell(rstLoop + 2, 3).Range.Text = readerOrderLines(4) 'Quantity Needed (Ordered)
-                                                .Cell(rstLoop + 2, 4).Range.Text = readerOrderLines(2) 'Quantity Packed (This Box)
-                                                .Rows.Add()
-                                                rstLoop = rstLoop + 1
-                                            Loop
-                                            .Rows.Last.Cells.Delete() 'Remove bottom empty row
-                                        End With
-
-                                        readerOrderLines.Close() 'close the order lines reader
-                                        If Not readerOrderLines Is Nothing Then readerOrderLines = Nothing
-
-                                        'close com objects on parent system
-                                        If Not objTable Is Nothing Then
-                                            System.Runtime.InteropServices.Marshal.ReleaseComObject(objTable)
+                                    'Table 2 shipping information and billing information
+                                    objTable = .Tables.Item(2)
+                                    With objTable
+                                        'Insert Text into table 2
+                                        'Ship to
+                                        .Cell(2, 1).Range.Text = readerOrderQueue(3) 'Company name
+                                        If Not readerOrderQueue.IsDBNull(4) Then
+                                            .Cell(2, 1).Range.Text = .Cell(2, 1).Range.Text & readerOrderQueue(4) 'Attn to if exists
                                         End If
-
-                                        'clear objTable object
-                                        If Not objTable Is Nothing Then objTable = Nothing
-
-                                        'Get page count from document
-                                        pages = .Application.ActiveDocument.Range.Information(Word.WdInformation.wdNumberOfPagesInDocument)
-
-                                        'Determine the pack method used for this order
-                                        cmd.CommandText = "rt_sp_aof_packMode"
-                                        cmd.CommandType = CommandType.StoredProcedure
-                                        cmd.Parameters.Add("@manualPack", SqlDbType.Bit)
-                                        cmd.Parameters("@manualPack").Direction = ParameterDirection.Output
-                                        cmd.ExecuteNonQuery()
-
-                                        Dim packMode As Boolean = cmd.Parameters("@manualPack").Value
-
-                                        If packMode = True Then
-                                            objWordApp.ActivePrinter = "Manual Pack Printer"
-                                        Else
-                                            objWordApp.ActivePrinter = "Auto Pack Printer"
+                                        .Cell(2, 1).Range.Text = .Cell(2, 1).Range.Text & readerOrderQueue(5) & vbCrLf & readerOrderQueue(6) _
+                            & ", " & readerOrderQueue(7) & " " & readerOrderQueue(8) & vbCrLf & readerOrderQueue(9)
+                                        'Bill to
+                                        .Cell(2, 2).Range.Text = readerOrderQueue(10) & vbCrLf & readerOrderQueue(11) & vbCrLf & readerOrderQueue(12) _
+                            & " " & readerOrderQueue(13) & ", " & readerOrderQueue(14) & vbCrLf & readerOrderQueue(15)
+                                        'Notes
+                                        .Cell(3, 1).Range.Text = .Cell(3, 1).Range.Text & " " & readerOrderQueue(1)
+                                        If Not readerOrderQueue.IsDBNull(16) Then
+                                            .Cell(3, 1).Range.Text = .Cell(3, 1).Range.Text & " " & readerOrderQueue(16)
                                         End If
+                                    End With
 
-                                        'disable alerts
-                                        .Application.DisplayAlerts = False
+                                    'Table 3 sales order, customer PO, and shipping method
+                                    objTable = .Tables.Item(3)
 
-                                        'Set save path string
-                                        saveString = userDesktopFolder & "\Integra Packing Lists - " & soNumber & " Box " & boxID & ".pdf"
+                                    With objTable
+                                        'Insert Text into table 3
+                                        'SO Info
+                                        .Cell(2, 1).Range.Text = readerOrderQueue(1)
+                                        .Cell(2, 2).Range.Text = readerOrderQueue(2)
+                                    End With
 
-                                        'Save document and set recommendation read only
-                                        .SaveAs2(saveString, Word.WdSaveFormat.wdFormatPDF, AddToRecentFiles:=True, ReadOnlyRecommended:=True)
+                                    readerOrderQueue.Close() 'close the order queue reader
+
+                                    If Not readerOrderQueue Is Nothing Then readerOrderQueue = Nothing
+
+                                    'Line item information
+                                    cmd.CommandText = "SELECT bL.[FINISHED_PART_NUMBER], ISNULL(bL.[SERIAL_NUMBERS], ''), " _
+                        & "bL.[QUANTITY], bL.[SO_LINE_NUMBER], aol.[QUANTITY_NEEDED], ISNULL(aoL.[DESCRIPTION], ''), " _
+                        & "ISNULL(aoL.[CUSTOMER_PRODUCT_NUMBER], '') " _
+                        & "FROM [AOF_BOXES_LINES] AS bL " _
+                        & "LEFT JOIN [AOF_ALL_ORDER_LINES] AS aoL " _
+                        & "On aoL.[SO_LINE_NUMBER] = bL.[SO_LINE_NUMBER] " _
+                        & "LEFT JOIN [AOF_ORDER_LINE_QUEUE] AS lQ " _
+                        & "On aoL.[SO_LINE_NUMBER] = lQ.[SO_LINE_NUMBER] " _
+                        & "LEFT JOIN [AOF_ORDER_QUEUE] AS oQ " _
+                        & "On aoL.[SALES_ORDER_NUMBER] = oQ.[SALES_ORDER_NUMBER] " _
+                        & "WHERE oQ.[SELECTED] = 'True' AND bL.[AOF_BOXES_ID] = " & boxID
+                                    Dim readerOrderLines As SqlDataReader = cmd.ExecuteReader()
+                                    Dim rstLoop As Integer = 0
+
+                                    'Line items
+                                    objTable = .Tables.Item(4)
+
+                                    'Insert text into table 4
+                                    With objTable
+                                        Do While readerOrderLines.Read()
+                                            .Cell(rstLoop + 2, 1).Range.Text = readerOrderLines(0) 'Item
+                                            .Cell(rstLoop + 2, 2).Range.Text = readerOrderLines(6) & vbCrLf _
+                                & readerOrderLines(5) & vbCrLf _
+                                & readerOrderLines(1) 'Description
+                                            .Cell(rstLoop + 2, 3).Range.Text = readerOrderLines(4) 'Quantity Needed (Ordered)
+                                            .Cell(rstLoop + 2, 4).Range.Text = readerOrderLines(2) 'Quantity Packed (This Box)
+                                            .Rows.Add()
+                                            rstLoop = rstLoop + 1
+                                        Loop
+                                        .Rows.Last.Cells.Delete() 'Remove bottom empty row
+                                    End With
+
+                                    readerOrderLines.Close() 'close the order lines reader
+                                    If Not readerOrderLines Is Nothing Then readerOrderLines = Nothing
+
+                                    'close com objects on parent system
+                                    If Not objTable Is Nothing Then
+                                        System.Runtime.InteropServices.Marshal.ReleaseComObject(objTable)
+                                    End If
+
+                                    'clear objTable object
+                                    If Not objTable Is Nothing Then objTable = Nothing
+
+                                    'Get page count from document
+                                    pages = .Application.ActiveDocument.Range.Information(Word.WdInformation.wdNumberOfPagesInDocument)
+
+                                    'Determine the pack method used for this order
+                                    cmd.CommandText = "rt_sp_aof_packMode"
+                                    cmd.CommandType = CommandType.StoredProcedure
+                                    cmd.Parameters.Add("@manualPack", SqlDbType.Bit)
+                                    cmd.Parameters("@manualPack").Direction = ParameterDirection.Output
+                                    cmd.ExecuteNonQuery()
+
+                                    Dim packMode As Boolean = cmd.Parameters("@manualPack").Value
+
+                                    If packMode = True Then
+                                        objWordApp.ActivePrinter = "Manual Pack Printer"
+                                    Else
+                                        objWordApp.ActivePrinter = "Auto Pack Printer"
+                                    End If
+
+                                    'disable alerts
+                                    .Application.DisplayAlerts = False
+
+                                    'Set save path string
+                                    saveString = userDesktopFolder & "\Integra Packing Lists - " & soNumber & " Box " & boxID & ".pdf"
+
+                                    'Save document and set recommendation read only
+                                    .SaveAs2(saveString, Word.WdSaveFormat.wdFormatPDF, AddToRecentFiles:=True, ReadOnlyRecommended:=True)
 
                                     'Print document to default printer
                                     '.PrintOut()
@@ -342,12 +346,12 @@ Module PackingListPrintModule
                                     'close without saving
                                     .Close(False)
 
-                                        If Not objTable Is Nothing Then objTable = Nothing
+                                    If Not objTable Is Nothing Then objTable = Nothing
 
-                                    End With
+                                End With
 
-                                    'clear objDoc object
-                                    If Not objDoc Is Nothing Then objDoc = Nothing
+                                'clear objDoc object
+                                If Not objDoc Is Nothing Then objDoc = Nothing
 
                                 'Open a filestream
                                 Dim saveStream As New FileStream(saveString, FileMode.Open, FileAccess.Read)
