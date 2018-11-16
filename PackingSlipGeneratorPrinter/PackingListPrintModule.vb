@@ -341,7 +341,7 @@ Module PackingListPrintModule
                                     .SaveAs2(saveString, Word.WdSaveFormat.wdFormatPDF, AddToRecentFiles:=True, ReadOnlyRecommended:=True)
 
                                     'Print document to default printer
-                                    '.PrintOut()
+                                    .PrintOut()
 
                                     'close without saving
                                     .Close(False)
